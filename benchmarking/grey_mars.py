@@ -77,6 +77,7 @@ namelist = Namelist({
         'roughness_moist':0.,                
         'two_stream_gray': True,     #Use grey radiation
         'do_lscale_cond': False,
+        'convection_scheme': 'none'
     },
 
     'vert_turb_driver_nml': {
