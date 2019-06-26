@@ -24,11 +24,12 @@ module atmosphere_mod
 #ifdef INTERNAL_FILE_NML
   use mpp_mod, only: input_nml_file
 #else
-  use fms_mod, only: open_namelist_file, close_file
+  use fms_mod, only: open_namelist_file, close_file, open_file, close_file
 #endif
 
-use                  fms_mod, only: set_domain, write_version_number, field_size, file_exist, stdlog, &
-                                    mpp_pe, mpp_root_pe, error_mesg, FATAL, read_data, write_data, nullify_domain
+use                  fms_mod, only: set_domain, write_version_number, field_size, file_exist, stdlog, check_nml_error, &
+                                    mpp_pe, mpp_root_pe, error_mesg, FATAL, read_data, write_data, nullify_domain, &
+                                    open_namelist_file, close_file, open_file, close_file
 
 use            constants_mod, only: grav, pi
 
@@ -113,7 +114,7 @@ subroutine atmosphere_init(Time_init, Time, Time_step_in)
 
 type (time_type), intent(in)  :: Time_init, Time, Time_step_in
 
-integer :: seconds, days, lon_max, lat_max, ntr, nt, i, j, nml_unit, io, stdlog_unit
+integer :: seconds, days, lon_max, lat_max, ntr, nt, i, j, nml_unit, io, stdlog_unit, ierr, unit
 integer, dimension(4) :: siz
 real, dimension(2) :: time_pointers
 character(len=64) :: file, tr_name
@@ -123,17 +124,38 @@ if(module_is_initialized) return
 
 call write_version_number(version, tagname)
 
+!     ----- read namelist -----
+
 #ifdef INTERNAL_FILE_NML
-   read (input_nml_file, nml=atmosphere_nml, iostat=io)
-#else  
-   if ( file_exist('input.nml') ) then
-      nml_unit = open_namelist_file()
-      read (nml_unit, atmosphere_nml, iostat=io)
-      call close_file(nml_unit)
-   endif
+     unit = open_namelist_file ( )
+     read (unit, nml=atmosphere_nml, iostat=io)
+     call close_file(unit)
+     ierr = check_nml_error(io, 'atmosphere_nml')
+#else
+      if (file_exist('input.nml')) then
+         unit = open_namelist_file ( )
+         ierr=1; do while (ierr /= 0)
+            read  (unit, nml=atmosphere_nml, iostat=io, end=10)
+            ierr = check_nml_error (io, 'atmosphere_nml')
+         enddo
+  10     call close_file (unit)
+      endif
 #endif
+
+
+
+! #ifdef INTERNAL_FILE_NML
+!    read (input_nml_file, nml=atmosphere_nml, iostat=io)
+! #else  
+!    if ( file_exist('input.nml') ) then
+!       nml_unit = open_namelist_file()
+!       read (nml_unit, atmosphere_nml, iostat=io)
+!       call close_file(nml_unit)
+!    endif
+! #endif
 stdlog_unit = stdlog()
 write(stdlog_unit, atmosphere_nml)
+write(*, atmosphere_nml)
 
 Time_step = Time_step_in
 call get_time(Time_step, seconds, days)

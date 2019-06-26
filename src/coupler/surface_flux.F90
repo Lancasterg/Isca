@@ -828,7 +828,9 @@ subroutine surface_flux_init
 
   ! read namelist
 #ifdef INTERNAL_FILE_NML
-      read (input_nml_file, surface_flux_nml, iostat=io)
+      open (unit = 24, file = "input.nml")
+      read (24, surface_flux_nml, iostat=io)
+      close (unit = 24)
      ierr = check_nml_error(io, 'surface_flux_nml')      
 #else
   if ( file_exist('input.nml')) then

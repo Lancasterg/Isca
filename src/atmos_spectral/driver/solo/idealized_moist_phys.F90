@@ -305,7 +305,9 @@ if(module_is_initialized) return
 call write_version_number(version, tagname)
 
 #ifdef INTERNAL_FILE_NML
-   read (input_nml_file, nml=idealized_moist_phys_nml, iostat=io)
+   open (unit = 24, file='input.nml')
+   read (24, nml=idealized_moist_phys_nml, iostat=io)
+   close(unit = 24)
 #else
    if ( file_exist('input.nml') ) then
       nml_unit = open_namelist_file()

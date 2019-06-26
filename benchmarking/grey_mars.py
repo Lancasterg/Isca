@@ -148,12 +148,12 @@ namelist = Namelist({
         'damping_coeff_div' : -1.,
         'num_levels': 25,
         'exponent': 2.5,
-        'scale_heights': 4,
+        'scale_heights': 4.0,
         'surf_res': 0.1,
         'robert_coeff': 4e-2,
         'vert_coord_option': 'input',
         'initial_sphum': 0.,
-        'valid_range_T': [0, 700],
+        'valid_range_T': [0.0, 700.0],
         'do_water_correction': False
     },
 
@@ -203,12 +203,12 @@ namelist = Namelist({
     },
 
     'constants_nml': {
-        'orbital_period': 59166360,
+        'orbital_period': 59166360.0,
         'solar_const':589.0,
         'radius':3396.0e3,
         'rdgas':192.0,
         'kappa':0.22727,
-        'rotation_period':88308,
+        'rotation_period':88308.,
     },
 
 })
@@ -240,7 +240,7 @@ if __name__=="__main__":
                 exp.namelist['astronomy_nml']['per'] = per_value
 
 #            with exp_progress(exp, description='o%.0f d{day}' % scale):
-                exp.run(1, use_restart=True, num_cores=NCORES)
+                exp.run(1, num_cores=NCORES)
                 for i in range(2, 241):
 #                with exp_progress(exp, description='o%.0f d{day}' % scale):
                     exp.run(i, num_cores=NCORES)

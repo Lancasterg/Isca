@@ -651,7 +651,7 @@ end subroutine fms_end
   INTEGER FUNCTION check_nml_error(IOSTAT, NML_NAME)
     INTEGER, INTENT(in) :: IOSTAT
     CHARACTER(len=*), INTENT(in) :: NML_NAME
-
+    
     CHARACTER(len=256) :: err_str
 
     IF ( .NOT.module_is_initialized) CALL fms_init()
@@ -659,9 +659,13 @@ end subroutine fms_end
     check_nml_error = IOSTAT
     
     ! Return on valid IOSTAT values
-    IF ( IOSTAT <= 0 .OR. IOSTAT == nml_errors%multipleNMLSinFile ) RETURN
-
+    IF ( IOSTAT <= 0 .OR. IOSTAT == nml_errors%multipleNMLSinFile ) THEN
+      print *, 'IOSTAT=', IOSTAT, ', NAMELIST=', NML_NAME, ', PROCESSOR=' , mpp_pe(), ', STATUS=OK'
+      ! call mpp_sync()
+      RETURN
+    END IF
     ! Everything else is a FATAL
+    print *, 'IOSTAT=', IOSTAT, ', NAMELIST=', NML_NAME, ', PROCESSOR=' ,mpp_pe(), ', STATUS=FATAL'
     IF ( mpp_pe() == mpp_root_pe() ) THEN
        IF ( (IOSTAT == nml_errors%badType1 .OR. IOSTAT == nml_errors%badType2) .OR. IOSTAT == nml_errors%missingVar ) THEN
           WRITE (err_str,*) 'Unknown namelist, or mistyped namelist variable in namelist ',TRIM(NML_NAME),', (IOSTAT = ',IOSTAT,')'

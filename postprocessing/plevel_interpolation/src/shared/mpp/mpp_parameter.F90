@@ -88,6 +88,7 @@ module mpp_parameter_mod
   integer, parameter :: MAX_TILES=100
 
   !--- The following paramters are used by mpp_io_mod and its components.
+  integer, parameter :: MPP_RDNAMELIST=24 ! New varaible for aarch64 compilation
   integer, parameter :: MPP_WRONLY=100, MPP_RDONLY=101, MPP_APPEND=102, MPP_OVERWR=103 !action on open
   integer, parameter :: MPP_ASCII=200,  MPP_IEEE32=201, MPP_NATIVE=202, MPP_NETCDF=203 !format
   integer, parameter :: MPP_SEQUENTIAL=300, MPP_DIRECT=301 !access

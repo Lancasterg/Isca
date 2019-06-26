@@ -193,7 +193,9 @@ pk = 0.
 bk = 0.
 
 #ifdef INTERNAL_FILE_NML
-    read (input_nml_file, nml=vert_coordinate_nml, iostat=io)
+    open (unit=24, file='input.nml')
+    read (24, nml=vert_coordinate_nml, iostat=io)
+    close (unit=24)
     ierr = check_nml_error(io, 'vert_coordinate_nml')
 #else
     namelist_unit = open_namelist_file()

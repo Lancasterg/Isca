@@ -583,7 +583,9 @@ subroutine vert_turb_driver_init (lonb, latb, id, jd, kd, axes, Time, &
 !--------------- read namelist ------------------
 
 #ifdef INTERNAL_FILE_NML
-   read (input_nml_file, nml=vert_turb_driver_nml, iostat=io)
+   open (unit=24, file='input.nml')
+   read (24, nml=vert_turb_driver_nml, iostat=io)
+   close(unit=24)
    ierr = check_nml_error(io,'vert_turb_driver_nml')
 #else   
       if (file_exist('input.nml')) then

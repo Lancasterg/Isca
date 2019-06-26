@@ -173,7 +173,9 @@ contains
 !----- read namelist -------
 
 #ifdef INTERNAL_FILE_NML
+     open(unit=24, file='main.nml')
      read (input_nml_file, nml=main_nml, iostat=io)
+     close(unit=24)
      ierr = check_nml_error(io, 'main_nml')
 #else
    unit = open_namelist_file ( )
@@ -184,10 +186,14 @@ contains
 10 call mpp_close (unit)
 #endif
 
+
 !----- write namelist to logfile -----
 
    call write_version_number (version,tag)
-   if ( mpp_pe() == mpp_root_pe() ) write (logunit, nml=main_nml)
+   if ( mpp_pe() == mpp_root_pe() ) then
+    write (logunit, nml=main_nml)
+    write(*, main_nml)
+   endif
 
    if (dt_atmos == 0) then
      call error_mesg ('program atmos_model', 'dt_atmos has not been specified', FATAL)

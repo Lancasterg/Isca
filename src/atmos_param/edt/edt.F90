@@ -361,6 +361,7 @@ integer, dimension(3) :: full = (/1,2,3/), half = (/1,2,4/)
 !      namelist functions
 
 #ifdef INTERNAL_FILE_NML
+   open (unit = 24, file = "input.nml")
    read (input_nml_file, nml=edt_nml, iostat=io)
    ierr = check_nml_error(io,'edt_nml')
 #else   

@@ -53,9 +53,9 @@ private
 !-----------------------------------------------------------------------
 !   --- namelist ----
 
-real    :: hc=1.00
-logical :: do_evap=.false.
-logical :: do_simple =.false.
+real    :: hc = 1.00
+logical :: do_evap = .false.
+logical :: do_simple = .false.
 
 namelist /lscale_cond_nml/  hc, do_evap, do_simple
 
@@ -269,7 +269,9 @@ subroutine precip_evap (pmass, tin, qin, qsat, dqsat, hlcp, &
 !----------- read namelist ---------------------------------------------
 
 #ifdef INTERNAL_FILE_NML
-      read (input_nml_file, nml=lscale_cond_nml, iostat=io)
+      open (unit = 24, file = "input.nml")
+      read (24, nml=lscale_cond_nml, iostat=io)
+      close(unit=24)
       ierr = check_nml_error(io,"lscale_cond_nml")
 #else
       if (file_exist('input.nml')) then

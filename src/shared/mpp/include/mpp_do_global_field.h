@@ -23,7 +23,7 @@
 !get a global field from a local field
 !local field may be on compute OR data domain
       type(domain2D), intent(in)    :: domain
-      MPP_TYPE_, intent(in)         ::  local(:,:,:)
+      MPP_TYPE_, intent(in)         :: local(:,:,:)
       integer, intent(in)           :: tile, ishift, jshift
       MPP_TYPE_, intent(out)        :: global(domain%x(tile)%global%begin:,domain%y(tile)%global%begin:,:)
       integer, intent(in), optional :: flags
@@ -120,7 +120,8 @@
          if(PRESENT(default_data)) then
             global = default_data
          else
-         !   global = 0 !func(global) !perhaps write a function to check the type of global? 
+            !print *, global
+            !global = 0 !func(global) !perhaps write a function to check the type of global? 
          endif
 
          do k = 1, ke

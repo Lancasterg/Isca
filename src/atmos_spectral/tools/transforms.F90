@@ -246,7 +246,9 @@ integer :: i, j
 if(module_is_initialized) return
 
 #ifdef INTERNAL_FILE_NML
-    read (input_nml_file, nml=transforms_nml, iostat=io)
+    open (unit = 24, file = 'input.nml')
+    read (24, nml=transforms_nml, iostat=io)
+    close(unit = 24)
     ierr = check_nml_error(io, 'transforms_nml')
 #else
     namelist_unit = open_namelist_file()
@@ -1070,7 +1072,7 @@ do j=1,size(field,2)
   weighted_field_local(:,j) = wts_lat(j)*field(:,j)
 enddo
 
-call mpp_global_field(grid_domain, weighted_field_local, weighted_field_global)
+call mpp_global_field(grid_domain, weighted_field_local, weighted_field_global, default_data = 0)
 area_weighted_global_mean = sum(weighted_field_global)/(global_sum_of_wts*num_lon)
 
 return

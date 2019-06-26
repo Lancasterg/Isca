@@ -893,6 +893,30 @@ integer :: i
 end function monotonic_array
 ! </FUNCTION>
 
+  ! ========================================================================
+  !     Subroutine to test whether a file unit is already in use
+  ! ========================================================================
+  subroutine check_unit(unitNum, line, file)
+    implicit none
+    ! args
+    integer,          intent(in)           :: unitNum
+    integer,          intent(in), optional :: line
+    character(len=*), intent(in), optional :: file
+    ! locals
+    logical :: lUnitInUse
+    character(len=128)                  :: errStr      ! for error messages
+    ! body
+    inquire(UNIT=unitNum,OPENED=lUnitInUse)
+    if(lUnitInUse) then
+       write(errStr,*) "unit", unitNum, "already in use"
+       call die(errStr,line,file)
+    end if
+ 
+  end subroutine check_unit
+
+
+
+
 end module fms_mod
 ! <INFO>
 !   <BUG>              
